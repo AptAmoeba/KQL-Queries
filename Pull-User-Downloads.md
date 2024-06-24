@@ -16,8 +16,7 @@ DeviceFileEvents
 //| where DeviceName contains 
 //    "deviceName" // Target device
 | where 
-    InitiatingProcessFileName =~ "msedge.exe" 
-    or InitiatingProcessFileName =~ "chrome.exe"
+    InitiatingProcessFileName in~ ("msedge.exe", "outlook.exe", "chrome.exe")
 | where FolderPath !contains "\\AppData"
 | summarize arg_max(Timestamp, User=InitiatingProcessAccountName, Device=DeviceName, Path=FolderPath, Downloaded_using=InitiatingProcessFileName, SHA256) by FileName
 | top 50 by Timestamp desc;
