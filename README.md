@@ -24,7 +24,7 @@ DeviceFileEvents
 
 &nbsp;
 
-### Search what users have a certain file
+### Detect which users have a certain file
 ```KQL
 // Created by AptAmoeba
 // Query to locate which users downloaded a file.
