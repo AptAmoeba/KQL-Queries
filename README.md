@@ -4,6 +4,25 @@ A collection of custom KQL Queries that I've written for 365 Defender's 'Advance
 If you'd like more verbose info/usage help on each query, check the actual files above. 
 
 ## List
+### SSH Execution Detected on Endpoint
+```KQL
+//Created by AptAmoeba - SSH Execution Detected on Endpoint
+let UserWhitelist = dynamic(['']);//Account whitelist
+let AppWhitelist = dynamic(['']);//File whitelist
+let ExecWhitelist = dynamic(['']);//Executed command whitelist
+DeviceProcessEvents
+| where Timestamp > ago(1d) and Timestamp > ago(6h)
+| where FileName in~ ("ssh.exe")
+    or InitiatingProcessFileName in~ ("cmd.exe", "powershell.exe", "powershell_ise.exe") and InitiatingProcessCommandLine contains "ssh"
+    or InitiatingProcessFileName in~ ("plink.exe", "putty.exe")
+//| where not(InitiatingProcessAccountName in (UserWhitelist)) //Exclude Account whitelist items
+//| where not(InitiatingProcessFileName in (AppWhitelist)) //Exclude File whitelist items
+//| where not(ProcessCommandLine has_any (ExecWhitelist)) //Exclude Executions whitelist items
+| project Timestamp, User=InitiatingProcessAccountName, Executed_Command=ProcessCommandLine, Process=InitiatingProcessFileName, wasProcRemote=IsProcessRemoteSession, wasInitProcRemote=IsInitiatingProcessRemoteSession, DeviceId, ReportId
+| top 50 by Timestamp desc
+```
+&nbsp;
+
 ### Detect & Deobfuscate Base64-Encoded Powershell Commands
 ```KQL
 //Original created by Ben-Jan Pals. Modifications by AptAmoeba: Added exclusion list; column name cleanup; output sorting by impact, then by recency;
