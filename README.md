@@ -13,7 +13,7 @@ let ExecWhitelist = dynamic(['']);//Executed command whitelist
 DeviceProcessEvents
 | where Timestamp > ago(1d) and Timestamp > ago(6h)
 | where FileName in~ ("ssh.exe")
-    or InitiatingProcessFileName in~ ("cmd.exe", "powershell.exe", "powershell_ise.exe") and InitiatingProcessCommandLine contains "ssh"
+    or InitiatingProcessFileName in~ ("cmd.exe", "powershell.exe", "powershell_ise.exe", "git.exe") and InitiatingProcessCommandLine contains "ssh"
     or InitiatingProcessFileName in~ ("plink.exe", "putty.exe")
 //| where not(InitiatingProcessAccountName in (UserWhitelist)) //Exclude Account whitelist items
 //| where not(InitiatingProcessFileName in (AppWhitelist)) //Exclude File whitelist items
